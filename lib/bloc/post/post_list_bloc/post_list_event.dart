@@ -1,3 +1,7 @@
-class PostListEvent {
-  
+class PostListEvent {}
+
+class GetPostListEvent extends PostListEvent{
+  GetPostListEvent();
 }
+
+

@@ -42,8 +42,8 @@ class _PostLayoutState extends State<PostLayout> {
               height: (MediaQuery.of(context).size.height)-56-38,
               color: Colors.black87,
               child:
-              Post(urlProfilePic: widget.profilePic,
-                photoUrl: widget.urlPhoto,
+              PostModel(
+                postList: [],
                 index: 0,
                 upperRightIcon: (Icon(Icons.more_vert_outlined, color: Colors.white,)),
               ),),

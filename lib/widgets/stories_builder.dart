@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../model/post.dart';
+
 class StoriesBuilder extends StatelessWidget {
   final int number;
   bool isProfile;
+  final List<Post> postList;
 
   //bool isProfile
 
   StoriesBuilder({Key? key,
     required this.number,
     required this.isProfile,
+    required this.postList,
     })
       : super(key: key);
 
@@ -26,8 +30,7 @@ class StoriesBuilder extends StatelessWidget {
   Widget feedStories(int number) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: 10,
-      //itemCount: userList?.isNotEmpty == true ? userList!.length : 0,
+      itemCount: postList.isNotEmpty == true ? postList.length : 0,
       scrollDirection: Axis.horizontal,
       itemBuilder: (build, index) {
         return Padding(
@@ -56,7 +59,7 @@ class StoriesBuilder extends StatelessWidget {
                 ),
               ),
               Text(
-                index == 0 ? 'La tua storia' : 'user${index}',
+                index == 0 ? 'La tua storia' : postList![index].user.username,
                 style: TextStyle(
                   fontSize: 12,
                 ),

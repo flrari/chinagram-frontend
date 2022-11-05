@@ -1,7 +1,10 @@
 
+import 'package:chinagram/bloc/post/post_list_bloc/post_list_bloc.dart';
+import 'package:chinagram/network/api.dart';
 import 'package:chinagram/screens/search_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../screens/feed_layout.dart';
 import '../screens/profile_layout.dart';
@@ -18,6 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   late int _currentIndex;
+  ApiCalls apiCalls = ApiCalls();
 
   @override
   void initState() {
@@ -40,7 +44,8 @@ class _HomePageState extends State<HomePage> {
             builder: (BuildContext context, BoxConstraints constraints) {
               switch (_currentIndex) {
                 case 0:
-                  return FeedLayout();
+                  return BlocProvider<PostListBloc>(create: (context) => PostListBloc(apiCalls: apiCalls),
+                    child: FeedLayout(),);
                 case 1:
                   return SearchLayout();
                 case 2:

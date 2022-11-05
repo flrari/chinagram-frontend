@@ -2,38 +2,67 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../screens/comments_screen.dart';
+import '../model/post.dart';
 
 
-class Post extends StatefulWidget {
+class PostModel extends StatefulWidget {
 
-  final String urlProfilePic;
-  final String photoUrl;
+  final List<Post> postList;
   final int index;
   final Widget upperRightIcon;
 
-  const Post({Key? key,
-    required this.urlProfilePic,
-    required this.photoUrl,
+  const PostModel({Key? key,
+    required this.postList,
     required this.upperRightIcon,
     required this.index,
 
   }) : super(key: key);
 
   @override
-  State<Post> createState() => _PostState();
+  State<PostModel> createState() => _PostModelState();
 }
 
-class _PostState extends State<Post> {
+class _PostModelState extends State<PostModel> {
 
   bool liked = false;
   bool isSlider = false;
+  int item = 0;
+  late List<String> postPhotos = [];
+
+  countPhotos(){
+    if(widget.postList![widget.index].url1 != null && widget.postList![widget.index].url2 != null){
+      isSlider = true;
+      item = 2;
+      postPhotos.add(widget.postList![widget.index].url1);
+      postPhotos.add(widget.postList![widget.index].url2!);
+    } else if(widget.postList![widget.index].url1 != null && widget.postList![widget.index].url2 != null && widget.postList![widget.index].url3 != null){
+      isSlider = true;
+      item = 3;
+      postPhotos.add(widget.postList![widget.index].url1);
+      postPhotos.add(widget.postList![widget.index].url2!);
+      postPhotos.add(widget.postList![widget.index].url3!);
+    } else if(widget.postList![widget.index].url1 != null && widget.postList![widget.index].url2 != null && widget.postList![widget.index].url3 != null && widget.postList![widget.index].url4 != null){
+      isSlider = true;
+      item = 4;
+      postPhotos.add(widget.postList![widget.index].url1);
+      postPhotos.add(widget.postList![widget.index].url2!);
+      postPhotos.add(widget.postList![widget.index].url3!);
+      postPhotos.add(widget.postList![widget.index].url4!);
+    } else if(widget.postList![widget.index].url1 != null && widget.postList![widget.index].url2 != null && widget.postList![widget.index].url3 != null && widget.postList![widget.index].url4 != null && widget.postList![widget.index].url5 != null){
+      isSlider = true;
+      item = 5;
+      postPhotos.add(widget.postList![widget.index].url1);
+      postPhotos.add(widget.postList![widget.index].url2!);
+      postPhotos.add(widget.postList![widget.index].url3!);
+      postPhotos.add(widget.postList![widget.index].url4!);
+      postPhotos.add(widget.postList![widget.index].url5!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    // if(widget.photos![widget.index].url!.length > 0){
-    //   isSlider = true;
-    // }
+    countPhotos();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,13 +70,13 @@ class _PostState extends State<Post> {
         ListTile(
           contentPadding: EdgeInsets.all(5),
           visualDensity: VisualDensity.compact,
-          title: Text('username'),
-          subtitle: Text('place'),
+          title: Text(widget.postList![widget.index].user.username),
+          subtitle: Text(widget.postList![widget.index].posizione!),
           leading:
           ClipRRect(
             borderRadius: BorderRadius.circular(50),
             child: Image.network(
-              widget.urlProfilePic,
+              widget.postList![widget.index].user.immagineProfilo,
               width: 40,
               height: 40,
             ),
@@ -57,8 +86,8 @@ class _PostState extends State<Post> {
             size: 18,
           ),
         ),
-        //isSlider ? slide(widget.photos![widget.index].url!) : photo(widget.photos![widget.index].url!),
-        photo(widget.photoUrl),
+        isSlider ? slide(postPhotos, item)
+                : photo(widget.postList![widget.index].url1),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 15),
           child: Row(
@@ -143,14 +172,14 @@ class _PostState extends State<Post> {
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 15),
           child: Text.rich(
             TextSpan(
-              text: 'username  ',
+              text: '${widget.postList![widget.index].user.username} ',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
               children: [
                 TextSpan(
-                  text: 'didscalia',
+                  text: widget.postList![widget.index].testo,
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 14,
@@ -217,61 +246,201 @@ class _PostState extends State<Post> {
     );
   }
 
-  Widget slide(String url){
 
-    List<String> urlList = [
-      url,
-      'https://picsum.photos/400?random=10',
-      'https://picsum.photos/400?random=15',
-      'https://picsum.photos/400?random=17'
-    ];
+  Widget slide(List<String> url, int item){
 
-    return CarouselSlider(
-        options: CarouselOptions(
-          enableInfiniteScroll: false,
-          height: 420,
-          autoPlay: false,
-          enlargeCenterPage: false,
-          viewportFraction: 1,
-        ),
-        items: [0, 1, 2, 3].map((i) {
-          return Stack(
-            alignment: AlignmentDirectional.topEnd,
-            children: [
-              InkWell(
-                onDoubleTap: () {
-                  setState(() {
-                    liked = !liked;
-                  });
-                },
-                child: Image.network(
-                  urlList[i],
-                  // height: 420,
-                  width: 420,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  width: 38,
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(10),
+    if(item == 2){
+      return CarouselSlider(
+          options: CarouselOptions(
+            enableInfiniteScroll: false,
+            height: 420,
+            autoPlay: false,
+            enlargeCenterPage: false,
+            viewportFraction: 1,
+          ),
+          items: [0, 1].map((i) {
+            return Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                InkWell(
+                  onDoubleTap: () {
+                    setState(() {
+                      liked = !liked;
+                    });
+                  },
+                  child: Image.network(
+                    url[i],
+                    // height: 420,
+                    width: 420,
+                    fit: BoxFit.cover,
                   ),
-                  child: Text('${i+1}/4',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),),
                 ),
-              ),
-            ],
-          );
-        }
-        ).toList()
-    );
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('${i+1}/2',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),),
+                  ),
+                ),
+              ],
+            );
+          }
+          ).toList()
+      );
+    } else if(item == 3){
+      return CarouselSlider(
+          options: CarouselOptions(
+            enableInfiniteScroll: false,
+            height: 420,
+            autoPlay: false,
+            enlargeCenterPage: false,
+            viewportFraction: 1,
+          ),
+          items: [0, 1, 2].map((i) {
+            return Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                InkWell(
+                  onDoubleTap: () {
+                    setState(() {
+                      liked = !liked;
+                    });
+                  },
+                  child: Image.network(
+                    url[i],
+                    // height: 420,
+                    width: 420,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('${i+1}/3',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),),
+                  ),
+                ),
+              ],
+            );
+          }
+          ).toList()
+      );
+    } else if(item == 4){
+      return CarouselSlider(
+          options: CarouselOptions(
+            enableInfiniteScroll: false,
+            height: 420,
+            autoPlay: false,
+            enlargeCenterPage: false,
+            viewportFraction: 1,
+          ),
+          items: [0, 1, 2, 3].map((i) {
+            return Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                InkWell(
+                  onDoubleTap: () {
+                    setState(() {
+                      liked = !liked;
+                    });
+                  },
+                  child: Image.network(
+                    url[i],
+                    // height: 420,
+                    width: 420,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('${i+1}/4',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),),
+                  ),
+                ),
+              ],
+            );
+          }
+          ).toList()
+      );
+    } else if(item == 5){
+      return CarouselSlider(
+          options: CarouselOptions(
+            enableInfiniteScroll: false,
+            height: 420,
+            autoPlay: false,
+            enlargeCenterPage: false,
+            viewportFraction: 1,
+          ),
+          items: [0, 1, 2, 3, 4].map((i) {
+            return Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                InkWell(
+                  onDoubleTap: () {
+                    setState(() {
+                      liked = !liked;
+                    });
+                  },
+                  child: Image.network(
+                    url[i],
+                    // height: 420,
+                    width: 420,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('${i+1}/5',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),),
+                  ),
+                ),
+              ],
+            );
+          }
+          ).toList()
+      );
+    } else {
+      return Container();
+    }
+
   }
 
 }

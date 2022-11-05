@@ -196,6 +196,7 @@ class _ProfileLayoutState extends State<ProfileLayout> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: StoriesBuilder(
+                              postList: [],
                                 number: 6,
                                 isProfile: true
                             ),
